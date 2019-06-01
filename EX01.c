@@ -1,81 +1,134 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <malloc.h>
+#include <stdbool.h>
 #include <string.h>
+typedef struct {
+  char key[10];
+  } Aviao;
 
-#define MAX 50
+typedef struct aux {
+  Aviao aviao;
+  struct aux* next;
+} Element;
 
 typedef struct {
-  char Cod[10];
-} Aviao;
-
-typedef struct {
-  Aviao A[MAX];
-  int size;
-  int head;
-  int tail;
+  Element* front;
+  Element* rear;
 } Pista;
 
-
-void Inicializar(Pista* pista){
-  pista->head = -1;
-  pista->tail = -1;
+void init(Pista* pista){
+  pista->front = NULL;
+  pista->rear = NULL;
 }
+
 
 bool isEmpty(Pista* pista) {
-	return pista->head == -1 && pista->tail == -1;
-}
-
-bool isFull(Pista* pista) {
-	int tmp = (pista->tail+1)%MAX;
-	return  tmp == pista->head;
-}
-
-bool Add(Pista* pista, Aviao aviao){
-	if (isFull(pista)) {
-		printf("Pista Cheia \n");
-		return false;
-	} else if(isEmpty(pista)) {
-		pista->head = 0;		
+	if( pista->front == NULL){
+		return true;
 	}
-	int tmp = (pista->tail+1)%MAX;
-	pista->tail = tmp;
-	pista->A[pista->tail] = aviao;
-	pista->size = pista->size + 1;
+	return false;
+}
+
+bool enqueue(Pista* pista, Aviao aviao){
+	Element* element = (Element*) malloc(sizeof(Element));
+	if (element == NULL) {
+		return false;
+	}
+	element->aviao = aviao;
+	element->next = NULL;
+	
+	if (isEmpty(pista)) {
+		pista->front = element;
+	} else {
+		pista->rear->next = element;
+	}
+	pista->rear = element;
     return true;
 }
 
-Aviao* ProximoADecolar(Pista* pista) {
+Aviao* dequeue(Pista* pista) {
+
+	if (isEmpty(pista)) {
+		printf("Lista vazia");
+		return NULL;
+	}
+	Element* toRemove = pista->front;
+	
 	Aviao* response = (Aviao*) malloc(sizeof(Aviao));
-	*response = pista->A[pista->head];
+	*response = toRemove->aviao;
+	
+	pista->front = toRemove->next;	
+	if (pista->front == NULL) {
+		pista->rear = NULL;
+	}
+	
+	free(toRemove);
 	return response;
 }
 
-Aviao* Decolar(Pista* pista) {
+void restart(Pista* pista) {
+	while (!isEmpty(pista)){
+		free(dequeue(pista));
+	}
+	init(pista);
+}
 
+Aviao* front(Pista* pista) {
 	if (isEmpty(pista)) {
 		return NULL;
 	}
-	int aux = pista->head;
-	if (pista->head == pista->tail) {
-		pista->head = -1;
-		pista->tail = -1;
-	} else {
-		int tmp = (pista->head+1)%MAX;
-		pista->head = tmp;
-	}
-	
 	Aviao* response = (Aviao*) malloc(sizeof(Aviao));
-	*response = pista->A[aux];
-	pista->size = pista->size-1;
+	*response = pista->front->aviao;
 	return response;
 }
 
-PrintAll(Pista* pista)
-{
-	int i;
-	for ( i = 0; i < pista->size; i++ ) {
-		printf( "Aviao Codigo %d esta na posicao %d\n",pista->A[ i ].Cod ,i );
-	}		
+
+void show(Pista pista){
+	printf("\n Pista Show\n");
+	while(!isEmpty(&pista)){
+		printf("Aviao codigo %d eh o proximo a decolar\n",front(&pista)->key);
+		free(dequeue(&pista));
+	}
 }
 
+int main(){
+	Pista pista;
+	Aviao aviao;
+	int op=10000;
+	while (op != 0) 
+	{
+		printf("Qual operação deseja fazer? \n");
+		printf("1 - Adicionar um avião na pista de decolagem \n");
+		printf("2 - Verificar qual o proximo avião a decolar \n");
+		printf("3 - Autorizar a decolagem do proximo avião na pista \n");
+		printf("4 - Listar a fila de espera da pista\n");
+		printf("0 - Encerrar as operaçoes\n");
+		scanf("%d",&op);
+		
+		switch(op)
+		{
+			case 1:
+				printf("Informe o codigo do avião com no maximo 10 caracteres \n");
+				scanf("%s",&aviao.key);
+				enqueue(&pista,aviao);
+				break;
+			case 2:
+				printf("Proximo avião a decolar é o de codigo %s\n",puts(front(&pista)->key));
+				break;
+			case 3:
+				printf("Aviao de codigo %s esta autorizado a decolar \n",dequeue(&pista)->key);
+				break;
+			case 4:
+				show(pista);
+				break;
+			default:
+				printf("opcao %d eh invalida",op);
+		}
+		
+	}
+	free(op);
+	
+	
+	
+
+}
