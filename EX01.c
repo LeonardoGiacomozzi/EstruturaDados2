@@ -86,15 +86,16 @@ Aviao* front(Pista* pista) {
 void show(Pista pista){
 	printf("\n Pista Show\n");
 	while(!isEmpty(&pista)){
-		printf("Aviao codigo %d eh o proximo a decolar\n",front(&pista)->key);
+		printf("Aviao codigo %s eh o proximo a decolar\n",front(&pista)->key);
 		free(dequeue(&pista));
 	}
 }
 
 int main(){
-	Pista pista;
-	Aviao aviao;
+	Pista pista ;
+	Aviao aviao ;
 	int op=10000;
+	init(&pista);
 	while (op != 0) 
 	{
 		printf("Qual operação deseja fazer? \n");
@@ -113,7 +114,7 @@ int main(){
 				enqueue(&pista,aviao);
 				break;
 			case 2:
-				printf("Proximo avião a decolar é o de codigo %s\n",puts(front(&pista)->key));
+				printf("Proximo avião a decolar e o de codigo %s\n",front(&pista)->key);
 				break;
 			case 3:
 				printf("Aviao de codigo %s esta autorizado a decolar \n",dequeue(&pista)->key);
@@ -121,12 +122,16 @@ int main(){
 			case 4:
 				show(pista);
 				break;
+			case 0:
+				printf("Sistema Finalizado!!");
+				op=0;
+				break;
 			default:
 				printf("opcao %d eh invalida",op);
 		}
 		
 	}
-	free(op);
+	free(&op);
 	
 	
 	
