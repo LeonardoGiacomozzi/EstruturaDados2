@@ -132,8 +132,4 @@ int main(){
 		
 	}
 	free(&op);
-	
-	
-	
-
 }
