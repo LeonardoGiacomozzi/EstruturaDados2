@@ -42,7 +42,7 @@ int main () {
 	Record key;
 	init(&pilha);
 	
-	printf("\nEscolha um numero decimal qualquer: \n");
+	printf("Escolha um numero decimal qualquer: \n");
 	scanf("%d", &key.numero);
 	
 	int aux;
